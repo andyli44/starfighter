@@ -1,0 +1,360 @@
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.io.File;
+import javax.imageio.ImageIO;
+import java.util.ArrayList;
+import java.util.List;
+
+public class AlienHorde
+{
+	private List<Alien> aliens;
+
+	public AlienHorde(int size)
+	{
+		aliens = new ArrayList<Alien>();
+		int x = 25;
+		int y = 50;
+		for( int i = 0; i < size; i++)
+		{
+			if( x > StarFighter.WIDTH - 50)
+			{
+				x = 25;
+				y += 75;
+			}
+			aliens.add( new Alien( x, y, 35, 35, 0) );
+			x += 75;
+		}
+	}
+
+	public void add(Alien al)
+	{
+	   aliens.add(al);
+	}
+
+	public void draw( Graphics window )
+	{
+		for( Alien a : aliens)
+			a.draw( window );
+	}
+
+	public void move()
+	{
+		for(Alien al : aliens)
+		{
+			al.move("DOWN");
+		}
+	}
+
+	public void removeDeadOnes(List<Ammo> shots)
+	{
+		for(int i = 0; i < shots.size(); i++)
+		{
+			Ammo am = shots.get(i);
+		   for(int j=0; j<aliens.size();j++)
+		   {
+		   	Alien al = aliens.get(j);
+			   if ((am.getX() >= al.getX() && am.getX() <= al.getX()+60) ||
+			        (am.getX()+10 >= al.getX() && am.getX()+10 <= al.getX()+60))
+			   	     if ((am.getY() >= al.getY() && am.getY() <= al.getY()+60) ||
+			   	     	   (am.getY()+10 >= al.getY() && am.getY()+10 <= al.getY()+60))
+			   	     	   {
+			   		         aliens.remove(j);
+			   		         shots.remove(i);
+			   		         break;
+			   	     	   }
+		   }
+		}
+	}
+
+	public String toString()
+	{
+		return "" + aliens;
+	}
+}
+
+
+
+public class Ammo extends MovingThing
+{
+	private int speed;
+
+	public Ammo()
+	{
+		this(0,0,0,0,0);
+	}
+
+	public Ammo(int x, int y)
+	{
+		this(x,y,10,10,0);
+	}
+
+	public Ammo(int x, int y, int w, int h, int s)
+	{
+		super(x, y, w, h);
+		speed=s;
+	}
+
+	public void setSpeed(int s)
+	{
+	   speed=s;
+	}
+
+	public int getSpeed()
+	{
+	   return speed;
+	}
+
+	public void move(String direction)
+	{
+      if(direction.equals("UP"))
+	      setY(getY()-getSpeed());
+      else if(direction.equals("DOWN"))
+	      setY(getY()+getSpeed());
+	}
+
+	public void draw( Graphics window )
+	{
+		window.setColor(Color.YELLOW);
+   	window.fillRect(getX(), getY(), getWidth(), getHeight());
+	}
+
+	public String toString()
+	{
+		return super.toString() + getSpeed();
+	}
+}
+
+
+
+
+
+
+
+
+public class Ammo extends MovingThing
+{
+	private int speed;
+
+	public Ammo()
+	{
+		this(0,0,0,0,0);
+	}
+
+	public Ammo(int x, int y)
+	{
+		this(x,y,10,10,0);
+	}
+
+	public Ammo(int x, int y, int w, int h, int s)
+	{
+		super(x, y, w, h);
+		speed=s;
+	}
+
+	public void setSpeed(int s)
+	{
+	   speed=s;
+	}
+
+	public int getSpeed()
+	{
+	   return speed;
+	}
+
+	public void move(String direction)
+	{
+      if(direction.equals("UP"))
+	      setY(getY()-getSpeed());
+      else if(direction.equals("DOWN"))
+	      setY(getY()+getSpeed());
+	}
+
+	public void draw( Graphics window )
+	{
+		window.setColor(Color.YELLOW);
+   	window.fillRect(getX(), getY(), getWidth(), getHeight());
+	}
+
+	public String toString()
+	{
+		return super.toString() + getSpeed();
+	}
+}
+
+
+
+
+
+
+
+
+
+public class Bullets
+{
+	private List<Ammo> ammo;
+
+	public Bullets()
+	{
+		ammo = new ArrayList<Ammo>();
+	}
+
+	public void add(Ammo al)
+	{
+	   ammo.add(al);
+	}
+
+	public void draw( Graphics window )
+	{
+		for( Ammo a : ammo)
+			a.draw( window );
+	}
+
+	public void move()
+	{
+		for(Ammo al : ammo)
+		{
+			al.move("UP");
+		}
+	}
+
+	public void cleanEmUp()
+	{
+		for(int i=0; i<ammo.size(); i++)
+		{
+			if(ammo.get(i).getX()<-20)
+			   ammo.remove(i);
+		}
+	}
+
+	public List<Ammo> getList()
+	{
+		return ammo;
+	}
+
+	public String toString()
+	{
+		return "" + ammo;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+public interface Moveable
+{
+    public void setPos( int x, int y);
+    public void setX( int x );
+    public void setY( int y );
+
+    public int getX();
+    public int getY();
+
+	 public int getWidth();
+	 public int getHeight();
+	 public void setWidth( int w );
+	 public void setHeight( int h );
+
+    public void setSpeed( int s );
+	 public int getSpeed();
+}
+
+
+
+
+
+
+
+
+
+public abstract class MovingThing implements Moveable
+{
+	private int xPos;
+	private int yPos;
+	private int width;
+	private int height;
+
+	public MovingThing()
+	{
+		xPos = 10;
+		yPos = 10;
+		width = 10;
+		height = 10;
+	}
+
+	public MovingThing(int x, int y)
+	{
+		xPos = x;
+		yPos = y;
+		width = 10;
+		height = 10;
+	}
+
+	public MovingThing(int x, int y, int w, int h)
+	{
+		xPos = x;
+		yPos = y;
+		width = w;
+		height = h;
+	}
+
+	public void setPos( int x, int y)
+	{
+		xPos = x;
+		yPos = y;
+	}
+
+	public void setX(int x)
+	{
+		xPos=x;
+	}
+
+	public void setY(int y)
+	{
+		yPos=y;
+	}
+
+	public int getX()
+	{
+		return xPos;
+	}
+
+	public int getY()
+	{
+		return yPos;
+	}
+
+	public void setWidth(int w)
+	{
+		width = w;
+	}
+
+	public void setHeight(int h)
+	{
+		height = h;
+	}
+
+	public int getWidth()
+	{
+		return width;
+	}
+
+	public int getHeight()
+	{
+		return height;
+	}
+
+	public abstract void move(String direction);
+	public abstract void draw(Graphics window);
+
+	public String toString()
+	{
+		return getX() + " " + getY() + " " + getWidth() + " " + getHeight();
+	}
+}
